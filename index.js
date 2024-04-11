@@ -12,22 +12,18 @@ app.get('/', (req, res)=>{
     res.send("<h1>Hello world!</h1>")
 })
 
-// app.post('/generate-certificate', async (req, res) => {
-//     // console.log(req)
-//     const { domain } = req.body; // Assuming domain is sent in the request body
+// Form to submit domain name
+app.get('/generate-certificate', (req, res) => {
+    const form = `
+        <form action="/generate-certificate" method="POST">
+            <label for="domain">Domain Name:</label>
+            <input type="text" id="domain" name="domain" required>
+            <button type="submit">Generate Certificate</button>
+        </form>
+    `;
+    res.send(form); // Send the HTML form
+});
 
-//     // Execute Certbot command to generate certificate
-//     var ssl_sript = await exec(`sh updated_ssl.sh ${domain}`,
-//         (error, stdout, stderr) => {
-//             console.log(stdout);
-//             console.log(stderr);
-//             if (error !== null) {
-//                 console.log(`exec error: ${error}`);
-//             }
-//         });
-
-//     console.log("ssl_sript ", ssl_sript)
-// });
 app.post('/generate-certificate', async (req, res) => {
     const { domain } = req.body;
 
