@@ -1,5 +1,3 @@
-## Implementation Overview
-
 # SSL Certificate Generator
 
 This is a simple SSL certificate generator script written in Python. It allows you to easily create SSL certificates for your websites or applications.
