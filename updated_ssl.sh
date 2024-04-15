@@ -1,6 +1,5 @@
 domain_arg=$1 # domain name recieved as argument from node application
 
-OMAIN_FILE="diff_new.txt"
 CONFIG_FOLDER="/var/www/certificates"
 WEBROOT_PATH="/var/www/html"
 NGINX_CONF_DIR="/etc/nginx/sites"
@@ -37,10 +36,27 @@ create_nginx_conf() {
 server {
   listen 80;
   server_name $domain www.$domain;
-location ^~ /.well-known/acme-challenge/ {
+  location ^~ /.well-known/acme-challenge/ {
     root $WEBROOT_PATH/$domain;
   }
   location / {
+    return 301 https://\$host\$request_uri;
+  }
+}
+server {
+  listen 443 ssl;
+  server_name www.$domain;
+  location / {
+    return 301 https://\$host\$request_uri;
+  }
+  ssl_certificate $CONFIG_FOLDER/live/$domain/fullchain.pem;
+  ssl_certificate_key $CONFIG_FOLDER/live/$domain/privkey.pem;
+}
+server {
+  listen 443 ssl;
+  server_name $domain;
+  location ^~ /.well-known/acme-challenge/ {
+    root $WEBROOT_PATH/$domain;location / {
     return 301 https://www.\$host\$request_uri;
   }
   ssl_certificate $CONFIG_FOLDER/live/$domain/fullchain.pem;
@@ -56,5 +72,5 @@ EOF
 # Main processing loop for each domain in the file
 
 process_domain "$domain_arg"
-# done < "$DOMAIN_FILE"
+
 # echo "SSL certificate generation process completed."
