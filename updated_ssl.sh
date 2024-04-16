@@ -56,7 +56,7 @@ server {
   listen 443 ssl;
   server_name $domain;
   location ^~ /.well-known/acme-challenge/ {
-    root $WEBROOT_PATH/$domain;location / {
+    root $WEBROOT_PATH/$domain;
     return 301 https://www.\$host\$request_uri;
   }
   ssl_certificate $CONFIG_FOLDER/live/$domain/fullchain.pem;
