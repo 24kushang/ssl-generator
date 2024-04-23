@@ -11,4 +11,4 @@ RUN npm install
 
 CMD ["node", "index"]
 
-EXPOSE 4000
+EXPOSE 3000
