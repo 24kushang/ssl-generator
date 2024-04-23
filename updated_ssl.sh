@@ -64,10 +64,8 @@ server {
 }
 EOF
     fi
-    # Check for syntax errors
-    nginx -t && systemctl reload nginx \
-    || echo "Error in Nginx configuration for $domain. Check the configuration." >&2
-    exit 1
+# Check for syntax errors
+nginx -t && systemctl reload nginx \
 }
 # Main processing loop for each domain in the file
 
