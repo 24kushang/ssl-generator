@@ -42,6 +42,7 @@ const generateCertificate = async (domain) => {
             if (code === 0) {
                 resolve();
             } else {
+                // generateCertificateWithRetry(domain)
                 reject(new Error('Error generating certificate'));
             }
         });
@@ -50,10 +51,10 @@ const generateCertificate = async (domain) => {
 
 const generateCertificateWithRetry = async (domain) => {
     const operation = retry.operation({
-        retries: 5, // Total number of retries (including the initial attempt)
+        retries: 3, // Total number of retries (including the initial attempt)
         factor: 2, // Exponential backoff factor
         minTimeout: 2 * 1000, // Initial timeout (2 hours)
-        maxTimeout: 2 * 1000, // Maximum timeout (2 hours)
+        // maxTimeout: 2 * 1000, // Maximum timeout (2 hours)
     });
 
     return new Promise((resolve, reject) => {
@@ -76,11 +77,18 @@ app.post('/generate-certificate', async (req, res) => {
     const { domain } = req.body;
 
     try {
-        await generateCertificateWithRetry(domain);
+        await generateCertificate(domain)
+        // await generateCertificateWithRetry(domain);
         res.status(200).send('Certificate generation successful');
     } catch (error) {
         console.error(`exec error: ${error}`);
         res.status(500).send('Internal server error');
+        generateCertificateWithRetry(domain).then(() => {
+            console.log(`Retry attempts completed for ${domain}`);
+        })
+        .catch((retryError) => {
+            console.error(`Retry attempts failed for ${domain}: ${retryError.message}`);
+        });
     }
 });
 

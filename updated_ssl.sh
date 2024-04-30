@@ -65,7 +65,7 @@ server {
 EOF
     fi
 # Check for syntax errors
-nginx -t && systemctl reload nginx \
+nginx -t && systemctl reload nginx 
 }
 # Main processing loop for each domain in the file
 
